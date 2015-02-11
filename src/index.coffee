@@ -20,6 +20,7 @@ mysql = require 'mysql'
 SqlString = require 'mysql/lib/protocol/SqlString'
 async = require 'async'
 # include more alinex modules
+once = require 'alinex-once'
 Config = require 'alinex-config'
 # internal helpers
 configcheck = require './configcheck'
@@ -33,7 +34,8 @@ class Mysql
   @escapeId: SqlString.escapeId
   @format: SqlString.format
 
-  @init: (@config = 'mysql', cb) ->
+  @init: once.wait (@config = 'mysql', cb) =>
+    # start new initialization if not running
     debug "init or reinit mysql"
     # set config from different values
     if typeof @config is 'string'
@@ -45,17 +47,12 @@ class Mysql
     if @config instanceof Config
       @configClass = @config
       @config = @configClass.data
-    @initDone = false # status set to true after initializing
     # set init status if configuration is loaded
-    unless @configClass?
-      cb() if cb?
-      @initDone = true
-    else
-      # wait till configuration is loaded
-      @configClass.load (err) =>
-        console.error err if err
-        cb err if cb?
-        @initDone = true
+    return cb() unless @configClass?
+    # wait till configuration is loaded
+    @configClass.load (err) =>
+      console.error err if err
+      cb err
 
   # ### Factory
   # Get an instance for the name. This enables the system to use the same
@@ -82,57 +79,57 @@ class Mysql
       throw new Error "Could not initialize Mysql class without database alias."
 
   connect: (cb) ->
-    unless Mysql.initDone?
-      return Mysql.init null, =>
-        @connect cb
-    # instantiate pool if not already done
-    unless @pool?
-      debugPool "initialize connection pool for #{@name}"
-      unless @constructor.config[@name]
-        return cb new Error "Given database alias '#{@name}' is not defined in configuration."
-      @pool = mysql.createPool @constructor.config[@name]
-      @pool.on 'connection', (conn) =>
-        conn.name = chalk.grey "[#{@name}##{conn._socket._handle.fd}]"
-        debugPool "#{conn.name} open connection"
-        conn.on 'error', (err) =>
-          debug "#{conn.name} uncatched #{err} on connection"
-          err = new Error "#{err.message} on connection to #{@name} database"
-          throw err
-      @pool.on 'enqueue', =>
-        name = chalk.grey "[#{@name}]"
-        debugPool "{name} waiting for connection"
-    # get the connection
-    @pool.getConnection (err, conn) =>
-      if err
-        debug chalk.grey("[#{@name}]") + " #{err} while connecting"
-        return cb new Error "#{err.message} while connecting to #{@name} database"
-      debugPool "#{conn.name} acquired connection"
-      # switch on debugging wih own method
-      conn.config.debug = true
-      conn._protocol._debugPacket = (incoming, packet) ->
-        dir = if incoming then '<--' else '-->'
-        msg = util.inspect packet
-        switch packet.constructor.name
-          when 'ComQueryPacket'
-            debugQuery "#{conn.name} #{msg}"
-          when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
-            debugResult "#{conn.name} #{packet.constructor.name} #{chalk.grey msg}"
-          when 'RowDataPacket'
-            debugData "#{conn.name} #{msg}"
-          when 'ComQuitPacket'
-            debugPool "#{conn.name} close connection"
-          else
-            debugCom "#{conn.name} #{dir} #{packet.constructor.name} #{chalk.grey msg}"
-      conn.release = ->
-        debugPool "#{conn.name} release connection (#{@_pool._freeConnections.length+1}/#{@_pool._allConnections.length} free)"
-        # release code copied from original function
-        return unless @_pool? and not @_pool._closed
-        @_pool.releaseConnection @
-      # return the connection
-      cb null, conn
+    Mysql.init null, (err) =>
+      return cb err if err
+      # instantiate pool if not already done
+      unless @pool?
+        debugPool "initialize connection pool for #{@name}"
+        unless @constructor.config[@name]
+          return cb new Error "Given database alias '#{@name}' is not defined in configuration."
+        @pool = mysql.createPool @constructor.config[@name]
+        @pool.on 'connection', (conn) =>
+          conn.name = chalk.grey "[#{@name}##{conn._socket._handle.fd}]"
+          debugPool "#{conn.name} open connection"
+          conn.on 'error', (err) =>
+            debug "#{conn.name} uncatched #{err} on connection"
+            err = new Error "#{err.message} on connection to #{@name} database"
+            throw err
+        @pool.on 'enqueue', =>
+          name = chalk.grey "[#{@name}]"
+          debugPool "{name} waiting for connection"
+      # get the connection
+      @pool.getConnection (err, conn) =>
+        if err
+          debug chalk.grey("[#{@name}]") + " #{err} while connecting"
+          return cb new Error "#{err.message} while connecting to #{@name} database"
+        debugPool "#{conn.name} acquired connection"
+        # switch on debugging wih own method
+        conn.config.debug = true
+        conn._protocol._debugPacket = (incoming, packet) ->
+          dir = if incoming then '<--' else '-->'
+          msg = util.inspect packet
+          switch packet.constructor.name
+            when 'ComQueryPacket'
+              debugQuery "#{conn.name} #{msg}"
+            when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
+              debugResult "#{conn.name} #{packet.constructor.name} #{chalk.grey msg}"
+            when 'RowDataPacket'
+              debugData "#{conn.name} #{msg}"
+            when 'ComQuitPacket'
+              debugPool "#{conn.name} close connection"
+            else
+              debugCom "#{conn.name} #{dir} #{packet.constructor.name} #{chalk.grey msg}"
+        conn.release = ->
+          debugPool "#{conn.name} release connection (#{@_pool._freeConnections.length+1}/#{@_pool._allConnections.length} free)"
+          # release code copied from original function
+          return unless @_pool? and not @_pool._closed
+          @_pool.releaseConnection @
+        # return the connection
+        cb null, conn
 
   close: (cb = ->) =>
     debugPool "close connection pool for #{@name}"
+    return cb() unless @pool?
     @pool.end (err) =>
       # remove pool instance to be reopened on next use
       @pool = null
