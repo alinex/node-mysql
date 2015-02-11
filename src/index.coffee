@@ -110,7 +110,7 @@ class Mysql
           msg = util.inspect packet
           switch packet.constructor.name
             when 'ComQueryPacket'
-              debugQuery "#{conn.name} #{msg}"
+              debugQuery "#{conn.name} #{packet.sql}"
             when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
               debugResult "#{conn.name} #{packet.constructor.name} #{chalk.grey msg}"
             when 'RowDataPacket'
