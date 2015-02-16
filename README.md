@@ -129,6 +129,7 @@ API
 - query(sql, data, cb) - run sql directly
 - queryOne(sql, data, cb) - get one field only
 - queryRow(sql, data, cb) - get one row as data object
+- update(sql, data, cb) - execute query and return number of affected rows
 - insertId(sql, data, cb) - execute query and return last insert id
 
 

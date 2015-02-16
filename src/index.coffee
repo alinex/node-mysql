@@ -182,6 +182,20 @@ class Mysql
       return cb err if err
       return cb null, result?.length
 
+  update: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
+    # replace placeholders
+    sql = mysql.format sql, data if data
+    # run the query
+    @connect (err, conn) ->
+      return cb new Error "MySQL Error: #{err.message}" if err
+      conn.query sql, (err, result) ->
+        conn.release()
+        return cb new Error "MySQL Error: #{err.message} in #{sql}" if err
+        cb err, result.affectedRows
+
   insertId: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
