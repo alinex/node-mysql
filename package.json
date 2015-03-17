@@ -31,17 +31,17 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "alinex-config": "0.3.x",
-    "alinex-once": "0.0.1",
+    "alinex-config": "0.4.x",
+    "alinex-once": "0.1.x",
     "async": "^0.9.0",
-    "chalk": "0.5.x",
+    "chalk": "1.x",
     "debug": "2.x",
     "mysql": "2.x"
   },
   "devDependencies": {
-    "alinex-error": "0.2.x",
+    "alinex-error": "1.x",
     "alinex-make": "0.4.x",
-    "chai": "1.x"
+    "chai": "2.x"
   },
   "optionalDependencies": {},
   "engines": {
