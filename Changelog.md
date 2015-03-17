@@ -4,6 +4,13 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.2.0 (2015-03-17)
+-------------------------------------------------
+- Upgraded dependent packages.
+- Added update method which returns affected rows.
+- Optimized debug output for queries.
+- Make parallel initial calls possible.
+
 Version 0.1.0 (2015-02-09)
 -------------------------------------------------
 - Documented simple database usage.
