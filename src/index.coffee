@@ -96,7 +96,7 @@ class Mysql
             throw err
         @pool.on 'enqueue', =>
           name = chalk.grey "[#{@name}]"
-          debugPool "{name} waiting for connection"
+          debugPool "{@name} waiting for connection"
       # get the connection
       @pool.getConnection (err, conn) =>
         if err
