@@ -12,7 +12,7 @@ describe "Mysql access", ->
     testdb.connect (err, conn) ->
       conn.query 'SELECT 2 + 2 AS solution', (err, rows, fields) ->
         throw err if err
-        console.log 'The solution is: ', rows[0].solution
+        console.log 'The database calculated 2+2: ', rows[0].solution
         conn.release()
         testdb.close (err) ->
           done()

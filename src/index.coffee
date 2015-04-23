@@ -18,9 +18,8 @@ util = require 'util'
 path = require 'path'
 mysql = require 'mysql'
 SqlString = require 'mysql/lib/protocol/SqlString'
-async = require 'async'
+async = require 'alinex-async'
 # include more alinex modules
-once = require 'alinex-once'
 Config = require 'alinex-config'
 # internal helpers
 configcheck = require './configcheck'
@@ -34,7 +33,7 @@ class Mysql
   @escapeId: SqlString.escapeId
   @format: SqlString.format
 
-  @init: once.wait (@config = 'mysql', cb) =>
+  @init: async.once (@config = 'mysql', cb) =>
     # start new initialization if not running
     debug "init or reinit mysql"
     # set config from different values
