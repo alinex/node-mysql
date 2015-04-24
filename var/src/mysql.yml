@@ -6,9 +6,9 @@
 test:
   host: localhost
   #port: 3306
-  database: test
-  user: test
-  password: ???
+  database: test_mysql
+  user: test_user
+  password: 1234
   #charset: UTF8_GENERAL_CI
   #timezone: local
   #connectTimeout: 10s
