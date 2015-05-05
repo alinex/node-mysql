@@ -137,6 +137,7 @@ class Mysql
   # Shortcut functions
   # -------------------------------------------------
 
+  # ## get all data as object
   query: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
@@ -151,6 +152,7 @@ class Mysql
         err = new Error "MySQL Error: #{err.message} in #{sql}" if err
         cb err, result
 
+  # ## get value of one field
   queryOne: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
@@ -162,6 +164,7 @@ class Mysql
         cb err, null
       cb err, result[0][Object.keys(result[0])]
 
+  # ## get one record as object
   queryRow: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
@@ -173,6 +176,7 @@ class Mysql
         cb err, null
       cb err, result[0]
 
+  # ## get number of records found
   queryCount: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
@@ -181,6 +185,7 @@ class Mysql
       return cb err if err
       return cb null, result?.length
 
+  # ## update, insert or delete something and return count of changes
   update: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
@@ -195,6 +200,7 @@ class Mysql
         return cb new Error "MySQL Error: #{err.message} in #{sql}" if err
         cb err, result.affectedRows
 
+  # ## insert record and return new primary key
   insertId: (sql, data, cb) ->
     unless typeof cb is 'function'
       cb = data
