@@ -17,28 +17,25 @@ access =
       title: "Hostname"
       description: "the hostname or ip address to connect to"
       type: 'hostname'
-      default: process.env.MYSQL_HOST ? 'localhost'
+      default: 'localhost'
     port:
       title: "Port"
       description: "the port mysql is listening"
       type: 'integer'
-      default: process.env.MYSQL_PORT ? 3306
+      default: 3306
     database:
       title: "Database Name"
       description: "the name of the database to use"
       type: 'string'
-      default: process.env.MYSQL_DATABASE
       optional: true
     user:
       title: "Username"
       description: "the name used to log into the database"
       type: 'string'
-      default: process.env.MYSQL_USER
     password:
       title: "Password"
       description: "the password to login"
       type: 'string'
-      default: process.env.MYSQL_PASSWORD
       optional: true
     charset:
       title: "Default Charset"

@@ -4,11 +4,13 @@
 # Mediacenter Database
 # -------------------------------------------------
 test:
-  host: localhost
-  #port: 3306
-  #database: test
-  #user: test
-  #password:
-  #charset: UTF8_GENERAL_CI
-  #timezone: local
-  #connectTimeout: 10s
+  host:
+    ENV: MYSQL_HOST
+  port:
+    ENV: MYSQL_PORT
+  database:
+    ENV: MYSQL_DATABASE
+  user:
+    ENV: MYSQL_USER
+  password:
+    ENV: MYSQL_PASSWORD
