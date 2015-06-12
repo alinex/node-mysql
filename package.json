@@ -31,7 +31,7 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "alinex-async": "^0.1.2",
+    "alinex-async": "0.2.x",
     "alinex-config": "0.4.x",
     "chalk": "1.x",
     "debug": "2.x",
@@ -40,7 +40,7 @@
   "devDependencies": {
     "alinex-error": "1.x",
     "alinex-make": "0.4.x",
-    "chai": "2.x"
+    "chai": "3.x"
   },
   "optionalDependencies": {},
   "engines": {
