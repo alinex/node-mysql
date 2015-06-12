@@ -1,5 +1,3 @@
-process = require 'process'
-
 # Check definitions
 # =================================================
 # This contains configuration definitions for the
