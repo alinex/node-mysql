@@ -77,7 +77,7 @@ class Mysql
     unless @name
       throw new Error "Could not initialize Mysql class without database alias."
 
-  connect: (cb) ->
+  connect: (cb, num=0) ->
     Mysql.init null, (err) =>
       return cb err if err
       # instantiate pool if not already done
@@ -91,8 +91,6 @@ class Mysql
           debugPool "#{conn.name} open connection"
           conn.on 'error', (err) =>
             debug "#{conn.name} uncatched #{err} on connection"
-            err = new Error "#{err.message} on connection to #{@name} database"
-            throw err
         @pool.on 'enqueue', =>
           name = chalk.grey "[#{@name}]"
           debugPool "{@name} waiting for connection"
@@ -100,7 +98,11 @@ class Mysql
       @pool.getConnection (err, conn) =>
         if err
           debug chalk.grey("[#{@name}]") + " #{err} while connecting"
-          return cb new Error "#{err.message} while connecting to #{@name} database"
+          if num > 10 # max retries to get a connection
+            return cb new Error "#{err.message} while connecting to #{@name} database"
+          return setTimeout =>
+            @connect cb
+          , 1000 # wait a second fbefore retry
         debugPool "#{conn.name} acquired connection"
         # switch on debugging wih own method
         conn.config.debug = true
