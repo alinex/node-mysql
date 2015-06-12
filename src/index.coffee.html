@@ -41,6 +41,24 @@
         <a href="#shortcut%20functions">Shortcut functions</a>
       </div>
       <div class="heading h2">
+        <a href="#get%20all%20data%20as%20object">get all data as object</a>
+      </div>
+      <div class="heading h2">
+        <a href="#get%20value%20of%20one%20field">get value of one field</a>
+      </div>
+      <div class="heading h2">
+        <a href="#get%20one%20record%20as%20object">get one record as object</a>
+      </div>
+      <div class="heading h2">
+        <a href="#get%20number%20of%20records%20found">get number of records found</a>
+      </div>
+      <div class="heading h2">
+        <a href="#update%2C%20insert%20or%20delete%20something%20and%20return%20count%20of%20changes">update, insert or delete something and return count of changes</a>
+      </div>
+      <div class="heading h2">
+        <a href="#insert%20record%20and%20return%20new%20primary%20key">insert record and return new primary key</a>
+      </div>
+      <div class="heading h2">
         <a href="#exports">Exports</a>
       </div>
     </div>
@@ -99,7 +117,7 @@
 <span class="nv">path = </span><span class="nx">require</span> <span class="s">&#39;path&#39;</span>
 <span class="nv">mysql = </span><span class="nx">require</span> <span class="s">&#39;mysql&#39;</span>
 <span class="nv">SqlString = </span><span class="nx">require</span> <span class="s">&#39;mysql/lib/protocol/SqlString&#39;</span>
-<span class="nv">async = </span><span class="nx">require</span> <span class="s">&#39;async&#39;</span>
+<span class="nv">async = </span><span class="nx">require</span> <span class="s">&#39;alinex-async&#39;</span>
 
 </pre></div>
         </td>
@@ -112,7 +130,6 @@
 <p>include more alinex modules</p>
         </td>
         <td class="code highlight"><div class="highlight"><pre>
-<span class="nv">once = </span><span class="nx">require</span> <span class="s">&#39;alinex-once&#39;</span>
 <span class="nv">Config = </span><span class="nx">require</span> <span class="s">&#39;alinex-config&#39;</span>
 
 </pre></div>
@@ -161,7 +178,7 @@
   <span class="vi">@escapeId: </span><span class="nx">SqlString</span><span class="p">.</span><span class="nx">escapeId</span>
   <span class="vi">@format: </span><span class="nx">SqlString</span><span class="p">.</span><span class="nx">format</span>
 
-  <span class="vi">@init: </span><span class="nx">once</span><span class="p">.</span><span class="nx">wait</span> <span class="nf">(@config = &#39;mysql&#39;, cb) =&gt;</span>
+  <span class="vi">@init: </span><span class="nx">async</span><span class="p">.</span><span class="nx">once</span> <span class="nf">(@config = &#39;mysql&#39;, cb) =&gt;</span>
 
 </pre></div>
         </td>
@@ -312,7 +329,7 @@ better use the <code>instance()</code> method which implements the factory patte
     <span class="k">unless</span> <span class="nx">@name</span>
       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;Could not initialize Mysql class without database alias.&quot;</span>
 
-  <span class="nv">connect: </span><span class="nf">(cb) -&gt;</span>
+  <span class="nv">connect: </span><span class="nf">(cb, num=0) -&gt;</span>
     <span class="nx">Mysql</span><span class="p">.</span><span class="nx">init</span> <span class="kc">null</span><span class="p">,</span> <span class="nf">(err) =&gt;</span>
       <span class="k">return</span> <span class="nx">cb</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
 
@@ -337,11 +354,9 @@ better use the <code>instance()</code> method which implements the factory patte
           <span class="nx">debugPool</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">conn</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> open connection&quot;</span>
           <span class="nx">conn</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="nf">(err) =&gt;</span>
             <span class="nx">debug</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">conn</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> uncatched </span><span class="si">#{</span><span class="nx">err</span><span class="si">}</span><span class="s"> on connection&quot;</span>
-            <span class="nv">err = </span><span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="s"> on connection to </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> database&quot;</span>
-            <span class="k">throw</span> <span class="nx">err</span>
         <span class="nx">@pool</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;enqueue&#39;</span><span class="p">,</span> <span class="o">=&gt;</span>
           <span class="nv">name = </span><span class="nx">chalk</span><span class="p">.</span><span class="nx">grey</span> <span class="s">&quot;[</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">]&quot;</span>
-          <span class="nx">debugPool</span> <span class="s">&quot;{name} waiting for connection&quot;</span>
+          <span class="nx">debugPool</span> <span class="s">&quot;{@name} waiting for connection&quot;</span>
 
 </pre></div>
         </td>
@@ -357,7 +372,11 @@ better use the <code>instance()</code> method which implements the factory patte
       <span class="nx">@pool</span><span class="p">.</span><span class="nx">getConnection</span> <span class="nf">(err, conn) =&gt;</span>
         <span class="k">if</span> <span class="nx">err</span>
           <span class="nx">debug</span> <span class="nx">chalk</span><span class="p">.</span><span class="nx">grey</span><span class="p">(</span><span class="s">&quot;[</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">]&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; </span><span class="si">#{</span><span class="nx">err</span><span class="si">}</span><span class="s"> while connecting&quot;</span>
-          <span class="k">return</span> <span class="nx">cb</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="s"> while connecting to </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> database&quot;</span>
+          <span class="k">if</span> <span class="nx">num</span> <span class="o">&gt;</span> <span class="mi">10</span> <span class="c1"># max retries to get a connection</span>
+            <span class="k">return</span> <span class="nx">cb</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="s"> while connecting to </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> database&quot;</span>
+          <span class="k">return</span> <span class="nx">setTimeout</span> <span class="o">=&gt;</span>
+            <span class="nx">@connect</span> <span class="nx">cb</span>
+          <span class="p">,</span> <span class="mi">1000</span> <span class="c1"># wait a second fbefore retry</span>
         <span class="nx">debugPool</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">conn</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> acquired connection&quot;</span>
 
 </pre></div>
@@ -451,6 +470,21 @@ better use the <code>instance()</code> method which implements the factory patte
         </td>
         <td class="code highlight"><div class="highlight"><pre>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="get%20all%20data%20as%20object">
+  <h2>
+    <a href="#get%20all%20data%20as%20object" name="get%20all%20data%20as%20object" class="pilcrow">&#182;</a>
+    get all data as object
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">query: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -462,7 +496,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-24" id="section-24">&#182;</a>
+  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
 </div>
 <p>replace placeholders</p>
         </td>
@@ -475,7 +509,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-25" id="section-25">&#182;</a>
+  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
 </div>
 <p>run the query</p>
         </td>
@@ -487,6 +521,21 @@ better use the <code>instance()</code> method which implements the factory patte
         <span class="nv">err = </span><span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;MySQL Error: </span><span class="si">#{</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="s"> in </span><span class="si">#{</span><span class="nx">sql</span><span class="si">}</span><span class="s">&quot;</span> <span class="k">if</span> <span class="nx">err</span>
         <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">result</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="get%20value%20of%20one%20field">
+  <h2>
+    <a href="#get%20value%20of%20one%20field" name="get%20value%20of%20one%20field" class="pilcrow">&#182;</a>
+    get value of one field
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">queryOne: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -498,6 +547,21 @@ better use the <code>instance()</code> method which implements the factory patte
         <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="kc">null</span>
       <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">Object</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="get%20one%20record%20as%20object">
+  <h2>
+    <a href="#get%20one%20record%20as%20object" name="get%20one%20record%20as%20object" class="pilcrow">&#182;</a>
+    get one record as object
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">queryRow: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -509,6 +573,21 @@ better use the <code>instance()</code> method which implements the factory patte
         <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="kc">null</span>
       <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="get%20number%20of%20records%20found">
+  <h2>
+    <a href="#get%20number%20of%20records%20found" name="get%20number%20of%20records%20found" class="pilcrow">&#182;</a>
+    get number of records found
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">queryCount: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -517,6 +596,21 @@ better use the <code>instance()</code> method which implements the factory patte
       <span class="k">return</span> <span class="nx">cb</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
       <span class="k">return</span> <span class="nx">cb</span> <span class="kc">null</span><span class="p">,</span> <span class="nx">result</span><span class="o">?</span><span class="p">.</span><span class="nx">length</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="update%2C%20insert%20or%20delete%20something%20and%20return%20count%20of%20changes">
+  <h2>
+    <a href="#update%2C%20insert%20or%20delete%20something%20and%20return%20count%20of%20changes" name="update%2C%20insert%20or%20delete%20something%20and%20return%20count%20of%20changes" class="pilcrow">&#182;</a>
+    update, insert or delete something and return count of changes
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">update: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -528,7 +622,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-26" id="section-26">&#182;</a>
+  <a class="pilcrow" href="#section-31" id="section-31">&#182;</a>
 </div>
 <p>replace placeholders</p>
         </td>
@@ -541,7 +635,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-27" id="section-27">&#182;</a>
+  <a class="pilcrow" href="#section-32" id="section-32">&#182;</a>
 </div>
 <p>run the query</p>
         </td>
@@ -553,6 +647,21 @@ better use the <code>instance()</code> method which implements the factory patte
         <span class="k">return</span> <span class="nx">cb</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;MySQL Error: </span><span class="si">#{</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="si">}</span><span class="s"> in </span><span class="si">#{</span><span class="nx">sql</span><span class="si">}</span><span class="s">&quot;</span> <span class="k">if</span> <span class="nx">err</span>
         <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">.</span><span class="nx">affectedRows</span>
 
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="insert%20record%20and%20return%20new%20primary%20key">
+  <h2>
+    <a href="#insert%20record%20and%20return%20new%20primary%20key" name="insert%20record%20and%20return%20new%20primary%20key" class="pilcrow">&#182;</a>
+    insert record and return new primary key
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
   <span class="nv">insertId: </span><span class="nf">(sql, data, cb) -&gt;</span>
     <span class="k">unless</span> <span class="k">typeof</span> <span class="nx">cb</span> <span class="o">is</span> <span class="s">&#39;function&#39;</span>
       <span class="nv">cb = </span><span class="nx">data</span>
@@ -564,7 +673,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-28" id="section-28">&#182;</a>
+  <a class="pilcrow" href="#section-34" id="section-34">&#182;</a>
 </div>
 <p>replace placeholders</p>
         </td>
@@ -577,7 +686,7 @@ better use the <code>instance()</code> method which implements the factory patte
       <tr>
         <td class="docs">
 <div class="pilwrap">
-  <a class="pilcrow" href="#section-29" id="section-29">&#182;</a>
+  <a class="pilcrow" href="#section-35" id="section-35">&#182;</a>
 </div>
 <p>run the query</p>
         </td>

@@ -22,6 +22,9 @@
     </div>
     <div id="tree"></div>
     <div id="headings">
+      <div class="heading h1">
+        <a href="#some%20extras%20for%20travis-ci%20only">Some extras for Travis-CI only</a>
+      </div>
     </div>
   </div>
   <div id="sidebar-toggle"></div>
@@ -42,11 +45,42 @@
 
         </td>
         <td class="code highlight"><div class="highlight"><pre><span class="l-Scalar-Plain">language</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">node_js</span>
+
 <span class="l-Scalar-Plain">node_js</span><span class="p-Indicator">:</span>
    <span class="p-Indicator">-</span> <span class="s">&quot;0.10&quot;</span>
    <span class="p-Indicator">-</span> <span class="s">&quot;0.11&quot;</span>
    <span class="p-Indicator">-</span> <span class="s">&quot;0.12&quot;</span>
    <span class="p-Indicator">-</span> <span class="s">&quot;io.js&quot;</span>
+<span class="l-Scalar-Plain">env</span><span class="p-Indicator">:</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">MYSQL_HOST=localhost MYSQL_DATABASE=test_mysql MYSQL_USER=root MYSQL_PASSWORD=</span>
+
+<span class="l-Scalar-Plain">before_script</span><span class="p-Indicator">:</span>
+<span class="l-Scalar-Plain">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span>
+  <span class="l-Scalar-Plain">- mysql -uroot -e &quot;DELETE FROM mysql.db WHERE Db = &#39;test\\_%&#39;;&quot;</span>
+  <span class="l-Scalar-Plain">- mysql -uroot -e &quot;DELETE FROM mysql.user WHERE Host = &#39;localhost&#39; AND User = &#39;&#39;;&quot;</span>
+  <span class="l-Scalar-Plain">- mysql -uroot -e &quot;FLUSH PRIVILEGES;&quot;</span>
+  <span class="l-Scalar-Plain">- mysql -uroot -e &quot;CREATE DATABASE IF NOT EXISTS test_mysql DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;&quot;</span>
+  <span class="l-Scalar-Plain">- mysql -uroot -e &quot;GRANT ALL PRIVILEGES ON test_mysql.* TO &#39;test_user&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;1234&#39;;&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="some%20extras%20for%20travis-ci%20only">
+  <h1>
+    <a href="#some%20extras%20for%20travis-ci%20only" name="some%20extras%20for%20travis-ci%20only" class="pilcrow">&#182;</a>
+    Some extras for Travis-CI only
+  </h1>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">mysql -uroot -e &quot;DELETE FROM mysql.user WHERE User = &#39;travis&#39;;&quot;</span>
+  <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">mysql -uroot -e &quot;FLUSH PRIVILEGES;&quot;</span>
+<span class="l-Scalar-Plain">=======</span>
+  <span class="l-Scalar-Plain">- &quot;mysql -e &#39;create database test_mysql;&#39;&quot;</span>
+<span class="p-Indicator">&gt;</span><span class="err">&gt;&gt;&gt;&gt;&gt;&gt; aeef57a563924eb37b9590321ebb0a892b47d980</span>
 </pre></div>
         </td>
       </tr>
