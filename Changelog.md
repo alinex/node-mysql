@@ -4,6 +4,21 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.2.2 (2015-06-12)
+-------------------------------------------------
+- Fixed simple connection test case.
+- Upgraded dependend modules.
+- Don't throw error while establishing a connection and retry.
+- Tests
+- Updated tests to run on travis.
+- Use environment variable in test config.
+- Try to use travis for database tests.
+- Add comments to shortcut functions.
+- Configure to test on travis.
+- Add database creation to travis script.
+- Replace alinex-once module with alinex-async.
+- Fixed reference to new coffeescript standard.
+
 Version 0.2.1 (2015-03-20)
 -------------------------------------------------
 - 
