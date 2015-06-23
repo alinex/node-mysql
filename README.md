@@ -1,7 +1,7 @@
 Package: alinex-mysql
 =================================================
 
-[![Dependency Status] (https://gemnasium.com/alinex/node-mysql.png)](https://gemnasium.com/alinex/node-mysql)
+[![Dependency Status](https://gemnasium.com/alinex/node-mysql.png)](https://gemnasium.com/alinex/node-mysql)
 
 A simple mysql access wrapper which will leverage the integration of a mysql
 database into an alinex based application.
