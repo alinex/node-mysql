@@ -11,18 +11,31 @@ database into an alinex based application.
 - integrated debug possibilities
 - short method calls
 
-It is one of the modules of the [Alinex Universe](http://alinex.github.io/node-alinex)
-following the code standards defined there.
+> It is one of the modules of the [Alinex Universe](http://alinex.github.io/code.html)
+> following the code standards defined in the [General Docs](http://alinex.github.io/node-alinex).
 
 
 Install
 -------------------------------------------------
 
-The easiest way is to let npm add the module directly:
+[![NPM](https://nodei.co/npm/alinex-mysql.png?downloads=true&downloadRank=true&stars=true)
+ ![Downloads](https://nodei.co/npm-dl/alinex-mysql.png?months=9&height=3)
+](https://www.npmjs.com/package/alinex-mysql)
 
-    > npm install alinex-mysql --save
+The easiest way is to let npm add the module directly to your modules
+(from within you node modules directory):
 
-[![NPM](https://nodei.co/npm/alinex-mysql.png?downloads=true&stars=true)](https://nodei.co/npm/alinex-mysql/)
+``` sh
+npm install alinex-mysql --save
+```
+
+And update it to the latest version later:
+
+``` sh
+npm update alinex-mysql --save
+```
+
+Always have a look at the latest [changes](Changelog.md).
 
 
 Usage
